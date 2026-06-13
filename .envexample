@@ -1,0 +1,2 @@
+PORT=[Aqui agregar puerto]
+MONGO_URI=[agregar el enlace de la base de datos]

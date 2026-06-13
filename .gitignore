@@ -1,0 +1,92 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+out/
+
+# TypeScript
+*.tsbuildinfo
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Runtime files
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Testing
+jest-results/
+test-results/
+
+# MongoDB local files (if applicable)
+data/db/
+
+# Cache
+.cache/
+.parcel-cache/
+.eslintcache
+
+# IDEs and editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+tmp/
+temp/
+
+# Docker
+.docker/
+
+# Local configuration
+*.local
+
+# Package manager
+.pnp/
+.pnp.js
+
+# Optional lockfiles (descomenta si NO quieres versionarlos)
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
+# Uploads (si tu aplicación almacena archivos localmente)
+uploads/
+public/uploads/
+
+# Generated documentation
+docs/generated/
+
+# Mongoose/Mongo export files
+*.bson
+*.metadata.json
+dump/
+
+# Secrets and certificates
+*.pem
+*.key
+*.crt
+*.cert
