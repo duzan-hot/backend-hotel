@@ -1,21 +1,37 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, Document } from "mongoose";
 
-export const ESTADOS_HABITACION = [
-  "disponible",
-  "ocupada",
-  "mantenimiento",
-  "limpieza",
-] as const;
+export enum EstadoHabitacion {
+  ACTIVO = "activo",
+  INACTIVO = "inactivo",
+  MANTENIMIENTO = "mantenimiento",
+}
 
-const HabitacionSchema = new Schema(
+export interface IHabitacion extends Document {
+  tipo_habitacion: string;
+  numero_habitacion: number;
+  piso: string;
+  capacidad: number;
+  precio_base: number;
+  estado_general: EstadoHabitacion;
+  tiene_garaje: boolean;
+  fecha_registro: Date;
+}
+
+const HabitacionSchema = new Schema<IHabitacion>(
   {
-    numero: {
+    tipo_habitacion: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
+    numero_habitacion: {
       type: Number,
       required: true,
       unique: true,
     },
 
-    tipo: {
+    piso: {
       type: String,
       required: true,
       trim: true,
@@ -27,35 +43,36 @@ const HabitacionSchema = new Schema(
       min: 1,
     },
 
-    descripcion: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-
-    precioBase: {
+    precio_base: {
       type: Number,
       required: true,
       min: 0,
     },
 
-    estado: {
+    estado_general: {
       type: String,
-      enum: ESTADOS_HABITACION,
-      default: "disponible",
+      enum: Object.values(EstadoHabitacion),
+      default: EstadoHabitacion.ACTIVO,
       required: true,
     },
 
-    imagenes: [
-      {
-        type: String,
-        trim: true,
-      },
-    ],
+    tiene_garaje: {
+      type: Boolean,
+      default: false,
+    },
+
+    fecha_registro: {
+      type: Date,
+      default: Date.now,
+    },
   },
   {
-    timestamps: true,
+    versionKey: false,
+    timestamps: true, // createdAt y updatedAt
   }
 );
 
-export default model("Habitacion", HabitacionSchema);
+export const HabitacionModel = model<IHabitacion>(
+  "Habitacion",
+  HabitacionSchema
+);

@@ -8,7 +8,7 @@ const startServer = async () => {
   const PORT = process.env.PORT || 3030;
 
   app.listen(PORT, () => {
-  console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
+  console.log(`🚀 Servidor corriendo en http://localhost:3030}`);
   });
 };
 

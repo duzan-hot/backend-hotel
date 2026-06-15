@@ -1,169 +1,149 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, Document, Types } from "mongoose";
 
-export const ESTADOS_RESERVA = [
-  "pendiente",
-  "confirmada",
-  "check_in",
-  "check_out",
-  "cancelada",
-] as const;
+export enum EstadoReserva {
+  ACTIVA = "activa",
+  FINALIZADA = "finalizada",
+  CANCELADA = "cancelada",
+}
 
-const HabitacionReservaSchema = new Schema(
+interface IClienteReserva {
+  nombre: string;
+  apellidos: string;
+  ci: string;
+  celular: string;
+  celular_pariente: string;
+  origen: string;
+}
+
+export interface IReserva extends Document {
+  cliente: IClienteReserva;
+
+  usuario_registro: Types.ObjectId;
+  habitacion: Types.ObjectId;
+
+  fecha_reserva: Date;
+  fecha_ingreso: Date;
+  fecha_salida: Date;
+
+  cantidad_noches: number;
+  costo: number;
+
+  garaje: boolean;
+  estado: EstadoReserva;
+
+  fecha_registro: Date;
+}
+
+const ClienteSchema = new Schema<IClienteReserva>(
   {
-    id_habitacion: {
-      type: Schema.Types.ObjectId,
-      ref: "Habitacion",
-      required: true,
-    },
-
-    numero_Habitacion: {
-      type: Number,
-      required: true,
-    },
-
-    tipo_Habitacion: {
+    nombre: {
       type: String,
       required: true,
+      trim: true,
     },
 
-    precio_Noche: {
-      type: Number,
+    apellidos: {
+      type: String,
       required: true,
-      min: 0,
+      trim: true,
     },
 
-    cantidad_Noches: {
-      type: Number,
+    ci: {
+      type: String,
       required: true,
-      min: 1,
+      trim: true,
     },
 
-    subtotal: {
-      type: Number,
+    celular: {
+      type: String,
       required: true,
-      min: 0,
+      trim: true,
+    },
+
+    celular_pariente: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    origen: {
+      type: String,
+      required: true,
+      trim: true,
     },
   },
   { _id: false }
 );
 
-const ServicioReservaSchema = new Schema(
+const ReservaSchema = new Schema<IReserva>(
   {
-    id_servicio: {
-      type: Schema.Types.ObjectId,
-      ref: "Servicio",
+    cliente: {
+      type: ClienteSchema,
       required: true,
     },
 
-    nombre_Servicio: {
-      type: String,
-      required: true,
-    },
-
-    precio_Unitario: {
-      type: Number,
-      required: true,
-      min: 0,
-    },
-
-    cantidad: {
-      type: Number,
-      required: true,
-      min: 1,
-    },
-
-    subtotal: {
-      type: Number,
-      required: true,
-      min: 0,
-    },
-  },
-  { _id: false }
-);
-
-const ReservaSchema = new Schema(
-  {
-    id_usuario: {
+    usuario_registro: {
       type: Schema.Types.ObjectId,
       ref: "Usuario",
       required: true,
     },
 
-    fecha_Reserva: {
+    habitacion: {
+      type: Schema.Types.ObjectId,
+      ref: "Habitacion",
+      required: true,
+    },
+
+    fecha_reserva: {
       type: Date,
       default: Date.now,
-      required: true,
     },
 
-    fecha_Ingreso: {
+    fecha_ingreso: {
       type: Date,
       required: true,
     },
 
-    fecha_Salida: {
+    fecha_salida: {
       type: Date,
       required: true,
+    },
+
+    cantidad_noches: {
+      type: Number,
+      required: true,
+      min: 1,
+    },
+
+    costo: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+
+    garaje: {
+      type: Boolean,
+      default: false,
     },
 
     estado: {
       type: String,
-      enum: ESTADOS_RESERVA,
-      default: "pendiente",
-      required: true,
+      enum: Object.values(EstadoReserva),
+      default: EstadoReserva.ACTIVA,
     },
 
-    habitaciones: {
-      type: [HabitacionReservaSchema],
-      default: [],
-    },
-
-    servicios: {
-      type: [ServicioReservaSchema],
-      default: [],
-    },
-
-    subtotal_Habitaciones: {
-      type: Number,
-      required: true,
-      default: 0,
-      min: 0,
-    },
-
-    subtotal_Servicios: {
-      type: Number,
-      required: true,
-      default: 0,
-      min: 0,
-    },
-
-    impuestos: {
-      type: Number,
-      required: true,
-      default: 0,
-      min: 0,
-    },
-
-    descuento: {
-      type: Number,
-      default: 0,
-      min: 0,
-    },
-
-    total: {
-      type: Number,
-      required: true,
-      min: 0,
-    },
-
-    observaciones: {
-      type: String,
-      trim: true,
-      default: "",
+    fecha_registro: {
+      type: Date,
+      default: Date.now,
     },
   },
   {
+    versionKey: false,
     timestamps: true,
   }
 );
 
-export default model("Reserva", ReservaSchema);
+export const ReservaModel = model<IReserva>(
+  "Reserva",
+  ReservaSchema
+);

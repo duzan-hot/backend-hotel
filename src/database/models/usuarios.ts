@@ -1,25 +1,31 @@
 import { Schema, model } from "mongoose";
 
 export const ROLES = [
-  "cliente",
-  "admin",
+  "ADMIN",
+  "GERENTE",
+  "INFORMACIONES",
 ] as const;
 
 export const ESTADOS = [
-  "activo",
-  "inactivo",
-  "bloqueado",
+  "ACTIVO",
+  "INACTIVO",
 ] as const;
 
 const UsuarioSchema = new Schema(
   {
-    nombre: {
+    nombres: {
       type: String,
       required: true,
       trim: true,
     },
 
-    apellido: {
+    ap_paterno: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
+    ap_materno: {
       type: String,
       required: true,
       trim: true,
@@ -32,12 +38,18 @@ const UsuarioSchema = new Schema(
       trim: true,
     },
 
-    email: {
+    rol: {
       type: String,
+      enum: ROLES,
       required: true,
-      unique: true,
-      lowercase: true,
-      trim: true,
+      default: "INFORMACIONES",
+    },
+
+    estado: {
+      type: String,
+      enum: ESTADOS,
+      required: true,
+      default: "ACTIVO",
     },
 
     password: {
@@ -46,35 +58,15 @@ const UsuarioSchema = new Schema(
       select: false,
     },
 
-    telefono: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-
-    direccion: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-
-    estado: {
-      type: String,
-      enum: ESTADOS,
-      default: "activo",
-      required: true,
-    },
-
-    rol: {
-      type: String,
-      enum: ROLES,
-      default: "cliente",
-      required: true,
+    fecha_registro: {
+      type: Date,
+      default: Date.now,
     },
   },
   {
     timestamps: true,
+    versionKey: false,
   }
 );
 
-export default model("Usuario", UsuarioSchema);
+export default model("Usuarios", UsuarioSchema);
